@@ -73,11 +73,11 @@ fun MenuHeader(pageTitle: String, currentRoute: String, navController: NavContro
                 )
                 NavigationDrawerItem(
                     label = { Text("Ouvidoria") },
-                    selected = currentRoute == "espacoSeguro",
+                    selected = currentRoute == "telaRelatos",
                     onClick = {
                         scope.launch { 
                             drawerState.close()
-                            navController.navigate("espacoSeguro")
+                            navController.navigate("telaRelatos")
                         }
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
@@ -88,6 +88,19 @@ fun MenuHeader(pageTitle: String, currentRoute: String, navController: NavContro
                     onClick = {
                         scope.launch { 
                             drawerState.close()
+                        }
+                    },
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
+                NavigationDrawerItem(
+                    label = { Text("Sair") },
+                    selected = false,
+                    onClick = {
+                        scope.launch {
+                            drawerState.close()
+                            navController.navigate("login") {
+                                popUpTo(0) { inclusive = true }
+                            }
                         }
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)

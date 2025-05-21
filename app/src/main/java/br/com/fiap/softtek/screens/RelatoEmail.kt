@@ -1,17 +1,10 @@
 package br.com.fiap.softtek.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -28,7 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,12 +36,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import br.com.fiap.softtek.ui.theme.DarkBlue
+import br.com.fiap.softtek.ui.theme.LightGrey
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EspacoSeguro(navController: NavController) {
+fun RelatoEmail(navController: NavController) {
     var textoRelato by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     var showSuccess by remember { mutableStateOf(false) }
@@ -70,8 +64,8 @@ fun EspacoSeguro(navController: NavController) {
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Menu",
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Voltar",
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
@@ -88,11 +82,8 @@ fun EspacoSeguro(navController: NavController) {
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFFEDEDED),
-                            Color(0xFF34486B)
-                        )
+                    brush = Brush.linearGradient(
+                        colors = listOf(DarkBlue, LightGrey, DarkBlue),
                     )
                 )
                 .padding(24.dp)
@@ -103,33 +94,39 @@ fun EspacoSeguro(navController: NavController) {
                 modifier = Modifier.fillMaxSize()
             ) {
                 Text(
-                    text = "Se sinta confortável, pode relatar o que quiser, esse é um espaço seguro",
-                    textAlign = TextAlign.Center,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = Color.Black
+                    text = "Descreva seu relato para a ouvidoria:",
+                    fontSize = 18.sp,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center
                 )
-
+                Spacer(modifier = Modifier.height(24.dp))
+                OutlinedTextField(
+                    value = "ouvidoria@empresa.com.br", // e-mail fixo
+                    onValueChange = {},
+                    label = { Text("E-mail da Ouvidoria") },
+                    readOnly = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                var emailUsuario by remember { mutableStateOf("") }
+                OutlinedTextField(
+                    value = emailUsuario,
+                    onValueChange = { emailUsuario = it },
+                    label = { Text("Seu e-mail") },
+                    readOnly = true,
+                    placeholder = { Text("Digite seu e-mail") },
+                    modifier = Modifier.fillMaxWidth()
+                )
                 Spacer(modifier = Modifier.height(32.dp))
 
                 OutlinedTextField(
                     value = textoRelato,
                     onValueChange = { textoRelato = it },
+                    label = { Text("Relato") },
                     placeholder = { Text("Digite aqui...") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(150.dp)
-                        .clip(RoundedCornerShape(12.dp)),
-                    colors = TextFieldDefaults.colors(
-                        focusedIndicatorColor = Color(0xFF3F7DED),
-                        unfocusedIndicatorColor = Color.LightGray,
-                        focusedTextColor = Color.Black,
-                        unfocusedTextColor = Color.Black,
-                        cursorColor = Color(0xFF3F7DED),
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White
-                    ),
-                    enabled = !isLoading
                 )
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -175,3 +172,4 @@ fun EspacoSeguro(navController: NavController) {
         }
     }
 }
+
