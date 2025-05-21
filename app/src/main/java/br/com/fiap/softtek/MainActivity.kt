@@ -23,6 +23,7 @@ import androidx.navigation.compose.rememberNavController
 import br.com.fiap.softtek.screens.CheckIn
 import br.com.fiap.softtek.screens.Home
 import br.com.fiap.softtek.screens.Login
+import br.com.fiap.softtek.screens.EspacoSeguro
 import br.com.fiap.softtek.ui.theme.SoftTekTheme
 
 class MainActivity : ComponentActivity() {
@@ -44,6 +45,11 @@ class MainActivity : ComponentActivity() {
                         composable(route = "login") { Login(navController) }
                         composable(route = "home") { Home(navController) }
                         composable(route = "checkIn") { CheckIn(navController) }
+                        composable(route = "espacoSeguro") { EspacoSeguro(navController) }
+                        composable(route = "avaliacaoPsicosocial") { 
+                            // Temporariamente redirecionando para Home até a tela ser implementada
+                            Home(navController) 
+                        }
                     }
                 }
             }

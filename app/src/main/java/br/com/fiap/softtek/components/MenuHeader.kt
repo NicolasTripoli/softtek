@@ -24,11 +24,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuHeader(pageTitle: String, currentRoute: String) {
+fun MenuHeader(pageTitle: String, currentRoute: String, navController: NavController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
@@ -43,7 +45,9 @@ fun MenuHeader(pageTitle: String, currentRoute: String) {
                     label = { Text("Home") },
                     selected = currentRoute == "home",
                     onClick = {
-                        scope.launch { drawerState.close() }
+                        scope.launch { 
+                            drawerState.close()
+                        }
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
@@ -51,23 +55,30 @@ fun MenuHeader(pageTitle: String, currentRoute: String) {
                     label = { Text("Check-in") },
                     selected = currentRoute == "checkin",
                     onClick = {
-                        scope.launch { drawerState.close() }
+                        scope.launch { 
+                            drawerState.close()
+                        }
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
                 NavigationDrawerItem(
                     label = { Text("Avaliação Psicosocial") },
-                    selected = currentRoute == "aaa",
+                    selected = currentRoute == "avaliacaoPsicosocial",
                     onClick = {
-                        scope.launch { drawerState.close() }
+                        scope.launch { 
+                            drawerState.close()
+                        }
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
                 NavigationDrawerItem(
-                    label = { Text("Ovidoria") },
-                    selected = currentRoute == "aaa",
+                    label = { Text("Ouvidoria") },
+                    selected = currentRoute == "espacoSeguro",
                     onClick = {
-                        scope.launch { drawerState.close() }
+                        scope.launch { 
+                            drawerState.close()
+                            navController.navigate("espacoSeguro")
+                        }
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
@@ -75,7 +86,9 @@ fun MenuHeader(pageTitle: String, currentRoute: String) {
                     label = { Text("Meu Dashboard") },
                     selected = currentRoute == "dashboard",
                     onClick = {
-                        scope.launch { drawerState.close() }
+                        scope.launch { 
+                            drawerState.close()
+                        }
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
@@ -111,7 +124,6 @@ fun MenuHeader(pageTitle: String, currentRoute: String) {
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewHeader() {
@@ -124,6 +136,6 @@ fun PreviewHeader() {
         )
     ) {
         // Exemplo de uso: Passando um Composable para o conteúdo da página
-        MenuHeader(pageTitle = "My App", currentRoute = "home")
+        MenuHeader(pageTitle = "My App", currentRoute = "home", navController = rememberNavController())
     }
 }
