@@ -14,6 +14,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -100,63 +102,74 @@ fun RelatoAnonimo(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Text(
-                    text = "Se sinta confortável, pode relatar o que quiser, esse é um espaço seguro",
-                    textAlign = TextAlign.Center,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = Color.Black
-                )
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                OutlinedTextField(
-                    value = textoRelato,
-                    onValueChange = { textoRelato = it },
-                    label = { Text("Relato") },
-                    placeholder = { Text("Digite aqui...") },
+                Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(150.dp)
-                )
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Button(
-                    onClick = {
-                        if (textoRelato.isNotBlank()) {
-                            scope.launch {
-                                isLoading = true
-                                // Simulando uma chamada de API
-                                delay(2000)
-                                isLoading = false
-                                showSuccess = true
-                                textoRelato = ""
-                                snackbarHostState.showSnackbar("Relato enviado com sucesso!")
-                            }
-                        } else {
-                            scope.launch {
-                                snackbarHostState.showSnackbar("Por favor, digite algo antes de enviar")
+                        .clip(RoundedCornerShape(16.dp)),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White.copy(alpha = 0.92f)
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Text(
+                            text = "Se sinta confortável, pode relatar o que quiser, esse é um espaço seguro",
+                            textAlign = TextAlign.Center,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = Color.Black
+                        )
+                        OutlinedTextField(
+                            value = textoRelato,
+                            onValueChange = { textoRelato = it },
+                            label = { Text("Relato") },
+                            placeholder = { Text("Digite aqui...") },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(150.dp)
+                        )
+                        Button(
+                            onClick = {
+                                if (textoRelato.isNotBlank()) {
+                                    scope.launch {
+                                        isLoading = true
+                                        delay(2000)
+                                        isLoading = false
+                                        showSuccess = true
+                                        textoRelato = ""
+                                        snackbarHostState.showSnackbar("Relato enviado com sucesso!")
+                                    }
+                                } else {
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("Por favor, digite algo antes de enviar")
+                                    }
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            shape = RoundedCornerShape(20.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = DarkBlue,
+                                contentColor = Color.White
+                            ),
+                            enabled = !isLoading
+                        ) {
+                            if (isLoading) {
+                                CircularProgressIndicator(
+                                    color = Color.White,
+                                    modifier = Modifier.height(24.dp)
+                                )
+                            } else {
+                                Text("Enviar", fontWeight = FontWeight.Bold)
                             }
                         }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF3F7DED),
-                        contentColor = Color.White
-                    ),
-                    enabled = !isLoading
-                ) {
-                    if (isLoading) {
-                        CircularProgressIndicator(
-                            color = Color.White,
-                            modifier = Modifier.height(24.dp)
-                        )
-                    } else {
-                        Text("Enviar", fontSize = 18.sp)
                     }
                 }
             }

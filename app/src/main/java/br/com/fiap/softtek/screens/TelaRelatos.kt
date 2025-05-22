@@ -24,12 +24,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import br.com.fiap.softtek.ui.theme.DarkBlue
 import br.com.fiap.softtek.ui.theme.LightGrey
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,43 +84,61 @@ fun TelaRelatos(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxSize()
             ) {
-                OutlinedButton(
-                    onClick = { navController.navigate("relatoAnonimo") },
+                Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(90.dp),
-                    shape = RoundedCornerShape(20.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = Color(0xFF3F7DED),
-                        contentColor = Color.White
-                    )
+                        .clip(RoundedCornerShape(16.dp)),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White.copy(alpha = 0.92f)
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
-                    Text("Relato anônimo", fontSize = 32.sp)
-                }
-
-                Spacer(modifier = Modifier.height(40.dp))
-
-                Text(
-                    "Se quiser relatar algo específico,\nsem ser anônimo nos mande um email",
-                    fontSize = 20.sp,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                OutlinedButton(
-                    onClick = { navController.navigate("relatoEmail") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(70.dp),
-                    shape = RoundedCornerShape(20.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = Color(0xFF3F7DED),
-                        contentColor = Color.White
-                    )
-                ) {
-                    Text("E-mail", fontSize = 28.sp)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Text(
+                            "Pode relatar de forma anônima(o)",
+                            fontSize = 20.sp,
+                            color = Color.Black,
+                            textAlign = TextAlign.Center
+                        )
+                        Button(
+                            onClick = { navController.navigate("relatoAnonimo") },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            shape = RoundedCornerShape(20.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = DarkBlue,
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text("Relato anônimo", fontWeight = FontWeight.Bold)
+                        }
+                        Text(
+                            "Se quiser relatar algo específico,\nsem ser anônimo nos mande um email",
+                            fontSize = 20.sp,
+                            color = Color.Black,
+                            textAlign = TextAlign.Center
+                        )
+                        Button(
+                            onClick = { navController.navigate("relatoEmail") },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            shape = RoundedCornerShape(20.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = DarkBlue,
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text("E-mail", fontWeight = FontWeight.Bold)
+                        }
+                    }
                 }
             }
         }

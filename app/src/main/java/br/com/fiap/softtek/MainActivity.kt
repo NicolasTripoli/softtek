@@ -26,6 +26,7 @@ import br.com.fiap.softtek.screens.Login
 import br.com.fiap.softtek.screens.RelatoAnonimo
 import br.com.fiap.softtek.screens.TelaRelatos
 import br.com.fiap.softtek.screens.RelatoEmail
+import br.com.fiap.softtek.screens.Dashboard
 import br.com.fiap.softtek.ui.theme.SoftTekTheme
 
 class MainActivity : ComponentActivity() {
@@ -54,6 +55,7 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route = "telaRelatos") { TelaRelatos(navController) }
                         composable(route = "relatoEmail") { RelatoEmail(navController) }
+                        composable(route = "dashboard") { Dashboard(navController) }
                     }
                 }
             }

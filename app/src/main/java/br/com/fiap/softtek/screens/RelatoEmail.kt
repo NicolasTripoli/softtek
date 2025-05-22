@@ -7,6 +7,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -93,79 +95,89 @@ fun RelatoEmail(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Text(
-                    text = "Descreva seu relato para a ouvidoria:",
-                    fontSize = 18.sp,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-                OutlinedTextField(
-                    value = "ouvidoria@empresa.com.br", // e-mail fixo
-                    onValueChange = {},
-                    label = { Text("E-mail da Ouvidoria") },
-                    readOnly = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                var emailUsuario by remember { mutableStateOf("") }
-                OutlinedTextField(
-                    value = emailUsuario,
-                    onValueChange = { emailUsuario = it },
-                    label = { Text("Seu e-mail") },
-                    readOnly = true,
-                    placeholder = { Text("Digite seu e-mail") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(32.dp))
-
-                OutlinedTextField(
-                    value = textoRelato,
-                    onValueChange = { textoRelato = it },
-                    label = { Text("Relato") },
-                    placeholder = { Text("Digite aqui...") },
+                Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(150.dp)
-                )
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Button(
-                    onClick = {
-                        if (textoRelato.isNotBlank()) {
-                            scope.launch {
-                                isLoading = true
-                                // Simulando uma chamada de API
-                                delay(2000)
-                                isLoading = false
-                                showSuccess = true
-                                textoRelato = ""
-                                snackbarHostState.showSnackbar("Relato enviado com sucesso!")
-                            }
-                        } else {
-                            scope.launch {
-                                snackbarHostState.showSnackbar("Por favor, digite algo antes de enviar")
+                        .clip(RoundedCornerShape(16.dp)),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White.copy(alpha = 0.92f)
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Text(
+                            text = "Escreva seu relato para a ouvidoria:",
+                            fontSize = 18.sp,
+                            color = Color.Black,
+                            textAlign = TextAlign.Center
+                        )
+                        OutlinedTextField(
+                            value = "ouvidoria@empresa.com.br",
+                            onValueChange = {},
+                            label = { Text("E-mail da Ouvidoria") },
+                            readOnly = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        var emailUsuario by remember { mutableStateOf("") }
+                        OutlinedTextField(
+                            value = emailUsuario,
+                            onValueChange = { emailUsuario = it },
+                            label = { Text("Seu e-mail") },
+                            readOnly = true,
+                            placeholder = { Text("Digite seu e-mail") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        OutlinedTextField(
+                            value = textoRelato,
+                            onValueChange = { textoRelato = it },
+                            label = { Text("Relato") },
+                            placeholder = { Text("Digite aqui...") },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(150.dp)
+                        )
+                        Button(
+                            onClick = {
+                                if (textoRelato.isNotBlank()) {
+                                    scope.launch {
+                                        isLoading = true
+                                        delay(2000)
+                                        isLoading = false
+                                        showSuccess = true
+                                        textoRelato = ""
+                                        snackbarHostState.showSnackbar("Relato enviado com sucesso!")
+                                    }
+                                } else {
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("Por favor, digite algo antes de enviar")
+                                    }
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            shape = RoundedCornerShape(20.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = DarkBlue,
+                                contentColor = Color.White
+                            ),
+                            enabled = !isLoading
+                        ) {
+                            if (isLoading) {
+                                CircularProgressIndicator(
+                                    color = Color.White,
+                                    modifier = Modifier.height(24.dp)
+                                )
+                            } else {
+                                Text("Enviar", fontWeight = FontWeight.Bold)
                             }
                         }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF3F7DED),
-                        contentColor = Color.White
-                    ),
-                    enabled = !isLoading
-                ) {
-                    if (isLoading) {
-                        CircularProgressIndicator(
-                            color = Color.White,
-                            modifier = Modifier.height(24.dp)
-                        )
-                    } else {
-                        Text("Enviar", fontSize = 18.sp)
                     }
                 }
             }

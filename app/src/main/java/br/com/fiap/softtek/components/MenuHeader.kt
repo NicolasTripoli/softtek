@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,13 +31,19 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuHeader(pageTitle: String, currentRoute: String, navController: NavController) {
+fun MenuHeader(
+    pageTitle: String,
+    currentRoute: String,
+    navController: NavController,
+    showBackButton: Boolean = false,
+    content: @Composable () -> Unit
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
     ModalNavigationDrawer(
         drawerState = drawerState,
-        gesturesEnabled = drawerState.isOpen,
+        gesturesEnabled = drawerState.isOpen && !showBackButton,
         drawerContent = {
             // Conteúdo do menu lateral (drawer)
             ModalDrawerSheet {
@@ -88,6 +95,7 @@ fun MenuHeader(pageTitle: String, currentRoute: String, navController: NavContro
                     onClick = {
                         scope.launch { 
                             drawerState.close()
+                            navController.navigate("dashboard")
                         }
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
@@ -118,13 +126,17 @@ fun MenuHeader(pageTitle: String, currentRoute: String, navController: NavContro
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        scope.launch {
-                            drawerState.apply { if (isClosed) open() else close() }
+                        if (showBackButton) {
+                            navController.navigateUp()
+                        } else {
+                            scope.launch {
+                                drawerState.apply { if (isClosed) open() else close() }
+                            }
                         }
                     }) {
                         Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = "Menu",
+                            imageVector = if (showBackButton) Icons.AutoMirrored.Filled.ArrowBack else Icons.Filled.Menu,
+                            contentDescription = if (showBackButton) "Voltar" else "Menu",
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
@@ -133,6 +145,7 @@ fun MenuHeader(pageTitle: String, currentRoute: String, navController: NavContro
                     containerColor = MaterialTheme.colorScheme.primary
                 )
             )
+            content()
         }
     }
 }
@@ -149,6 +162,8 @@ fun PreviewHeader() {
         )
     ) {
         // Exemplo de uso: Passando um Composable para o conteúdo da página
-        MenuHeader(pageTitle = "My App", currentRoute = "home", navController = rememberNavController())
+        MenuHeader(pageTitle = "My App", currentRoute = "home", navController = rememberNavController()) {
+            // Placeholder for the content parameter
+        }
     }
 }
