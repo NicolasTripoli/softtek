@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuHeader(
+fun MenuHeaderRh(
     pageTitle: String,
     currentRoute: String,
     navController: NavController,
@@ -45,48 +45,13 @@ fun MenuHeader(
         drawerState = drawerState,
         gesturesEnabled = drawerState.isOpen && !showBackButton,
         drawerContent = {
-            // Conteúdo do menu lateral (drawer)
             ModalDrawerSheet {
-                // Itens do menu
                 NavigationDrawerItem(
                     label = { Text("Home") },
                     selected = currentRoute == "home",
                     onClick = {
-                        scope.launch { 
+                        scope.launch {
                             drawerState.close()
-                        }
-                    },
-                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                )
-                NavigationDrawerItem(
-                    label = { Text("Avaliação Psicosocial") },
-                    selected = currentRoute == "avaliacaoPsicosocial",
-                    onClick = {
-                        scope.launch { 
-                            drawerState.close()
-                            navController.navigate("avaliacaoPsicosocial")
-                        }
-                    },
-                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                )
-                NavigationDrawerItem(
-                    label = { Text("Ouvidoria") },
-                    selected = currentRoute == "telaRelatos",
-                    onClick = {
-                        scope.launch { 
-                            drawerState.close()
-                            navController.navigate("telaRelatos")
-                        }
-                    },
-                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                )
-                NavigationDrawerItem(
-                    label = { Text("Meu Dashboard") },
-                    selected = currentRoute == "dashboard",
-                    onClick = {
-                        scope.launch { 
-                            drawerState.close()
-                            navController.navigate("dashboard")
                         }
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
@@ -143,7 +108,7 @@ fun MenuHeader(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewHeader() {
+fun PreviewHeaderRh() {
     MaterialTheme(
         colorScheme = lightColorScheme(
             primary = Color(41, 61, 91), // Softtek's Dark Blue
@@ -153,7 +118,7 @@ fun PreviewHeader() {
         )
     ) {
         // Exemplo de uso: Passando um Composable para o conteúdo da página
-        MenuHeader(pageTitle = "My App", currentRoute = "home", navController = rememberNavController()) {
+        MenuHeaderRh(pageTitle = "My App", currentRoute = "home", navController = rememberNavController()) {
             // Placeholder for the content parameter
         }
     }

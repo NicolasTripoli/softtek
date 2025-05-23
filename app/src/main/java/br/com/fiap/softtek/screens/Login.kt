@@ -53,10 +53,13 @@ fun Login(navController: NavController) {
 
     fun validateUser(){
         // TODO bater na api para saber se o usuário existe
-        if(email == "teste@email.com" && password == "senha123"){
+        if(email == "teste1" && password == "1"){
             errorMessage = ""
             navController.navigate("home")
-        }else {
+        } else if(email == "teste2" && password == "2") {
+            errorMessage = ""
+            navController.navigate("rh/home")
+        } else {
             errorMessage = "Email ou senha inválidos!"
         }
     }
