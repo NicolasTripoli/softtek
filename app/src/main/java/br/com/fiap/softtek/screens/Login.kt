@@ -36,6 +36,14 @@ import br.com.fiap.softtek.components.ErrorMessage
 import br.com.fiap.softtek.ui.theme.DarkBlue
 import br.com.fiap.softtek.ui.theme.LightGrey
 
+// Usuarios de Teste Funcionario
+// Email: teste@gmail.com
+// Senha: senha123
+
+// Usuarios de Teste RH
+// Email: teste2@gmail.com
+// Senha: senha1234
+
 @Composable
 fun Login(navController: NavController) {
 
@@ -53,10 +61,10 @@ fun Login(navController: NavController) {
 
     fun validateUser(){
         // TODO bater na api para saber se o usuário existe
-        if(email == "teste1" && password == "1"){
+        if(email == "teste@gmail.com" && password == "senha123"){
             errorMessage = ""
             navController.navigate("home")
-        } else if(email == "teste2" && password == "2") {
+        } else if(email == "teste2@gmail.com" && password == "senha1234") {
             errorMessage = ""
             navController.navigate("rh/home")
         } else {
