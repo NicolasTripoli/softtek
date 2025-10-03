@@ -2,11 +2,8 @@ package br.com.fiap.softtek.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,8 +16,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -29,16 +28,25 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.softtek.R
 import br.com.fiap.softtek.components.ErrorMessage
+import br.com.fiap.softtek.factory.RetrofitFactory
+import br.com.fiap.softtek.model.LoginRequest
+import br.com.fiap.softtek.model.LoginResponse
 import br.com.fiap.softtek.ui.theme.DarkBlue
 import br.com.fiap.softtek.ui.theme.LightGrey
+import br.com.fiap.softtek.utils.TokenManager
+import br.com.fiap.softtek.utils.UserDataManager
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 
 @Composable
 fun Login(navController: NavController) {
-
     var email: String by remember {
         mutableStateOf("")
     }
@@ -51,17 +59,32 @@ fun Login(navController: NavController) {
         mutableStateOf("")
     }
 
-    fun validateUser(){
-        // TODO bater na api para saber se o usuário existe
-        if(email == "teste1" && password == "1"){
-            errorMessage = ""
-            navController.navigate("home")
-        } else if(email == "teste2" && password == "2") {
-            errorMessage = ""
-            navController.navigate("rh/home")
-        } else {
-            errorMessage = "Email ou senha inválidos!"
-        }
+    val context = LocalContext.current.applicationContext
+
+    fun validateUser() {
+        val service = RetrofitFactory().getSofttekMapService(context)
+        val request = LoginRequest(email, password)
+
+        service.postLogin(request).enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                if (response.isSuccessful) {
+                    val loginResponse = response.body()
+                    loginResponse?.token?.let { token ->
+                        TokenManager.saveToken(navController.context, token)
+                    }
+                    loginResponse?.cpf?.let { cpf ->
+                        UserDataManager.saveCpf(navController.context, cpf)
+                    }
+                    navController.navigate("home")
+                } else {
+                    errorMessage = "Email ou senha inválidos!"
+                }
+            }
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                errorMessage = "Erro ao conectar: ${t.message}"
+            }
+        })
     }
 
     Box(

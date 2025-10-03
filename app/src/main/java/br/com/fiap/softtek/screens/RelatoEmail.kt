@@ -1,7 +1,15 @@
 package br.com.fiap.softtek.screens
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -20,7 +28,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,24 +40,64 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import br.com.fiap.softtek.factory.RetrofitFactory
+import br.com.fiap.softtek.model.OuvidoriaIdentificadaRequest
+import br.com.fiap.softtek.model.OuvidoriaIdentificadaResponse
 import br.com.fiap.softtek.ui.theme.DarkBlue
 import br.com.fiap.softtek.ui.theme.LightGrey
+import br.com.fiap.softtek.utils.UserDataManager
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RelatoEmail(navController: NavController) {
+    val context = LocalContext.current.applicationContext
+
     var textoRelato by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
-    var showSuccess by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+
+    fun enviarOuvidoriaIdentificada(
+        context: Context,
+        mensagem: String,
+        onResult: (OuvidoriaIdentificadaResponse?) -> Unit
+    ) {
+        val service = RetrofitFactory().getSofttekMapService(context)
+        val cpfUsuario = UserDataManager.getCpf(context)
+
+        val request = OuvidoriaIdentificadaRequest(cpfUsuario.toString(), mensagem)
+
+        service.enviarOuvidoriaIdentificada(request)
+            .enqueue(object : Callback<OuvidoriaIdentificadaResponse> {
+                override fun onResponse(
+                    call: Call<OuvidoriaIdentificadaResponse>,
+                    response: Response<OuvidoriaIdentificadaResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        onResult(response.body())
+                    } else {
+                        Log.e("Ouvidoria", "Erro: ${response.code()} - ${response.message()}")
+                        onResult(null)
+                    }
+                }
+
+                override fun onFailure(call: Call<OuvidoriaIdentificadaResponse>, t: Throwable) {
+                    Log.e("Ouvidoria", "Falha: ${t.message}")
+                    onResult(null)
+                }
+            })
+    }
 
     Scaffold(
         topBar = {
@@ -124,15 +171,6 @@ fun RelatoEmail(navController: NavController) {
                             readOnly = true,
                             modifier = Modifier.fillMaxWidth()
                         )
-                        var emailUsuario by remember { mutableStateOf("") }
-                        OutlinedTextField(
-                            value = emailUsuario,
-                            onValueChange = { emailUsuario = it },
-                            label = { Text("Seu e-mail") },
-                            readOnly = true,
-                            placeholder = { Text("Digite seu e-mail") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
                         OutlinedTextField(
                             value = textoRelato,
                             onValueChange = { textoRelato = it },
@@ -147,11 +185,23 @@ fun RelatoEmail(navController: NavController) {
                                 if (textoRelato.isNotBlank()) {
                                     scope.launch {
                                         isLoading = true
-                                        delay(2000)
-                                        isLoading = false
-                                        showSuccess = true
-                                        textoRelato = ""
-                                        snackbarHostState.showSnackbar("Relato enviado com sucesso!")
+                                        enviarOuvidoriaIdentificada(
+                                            context, textoRelato,
+                                            onResult = { result ->
+                                                isLoading = false
+                                                textoRelato = ""
+
+                                                if (result != null) {
+                                                    scope.launch {
+                                                        snackbarHostState.showSnackbar("Relato enviado com sucesso!")
+                                                    }
+                                                } else {
+                                                    scope.launch {
+                                                        snackbarHostState.showSnackbar("Erro ao enviar relato")
+                                                    }
+                                                }
+                                            }
+                                        )
                                     }
                                 } else {
                                     scope.launch {
@@ -178,6 +228,12 @@ fun RelatoEmail(navController: NavController) {
                                 Text("Enviar", fontWeight = FontWeight.Bold)
                             }
                         }
+                        Text(
+                            text = "Este relato é identificáveis.",
+                            fontSize = 12.sp,
+                            color = Color.Black,
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
             }
