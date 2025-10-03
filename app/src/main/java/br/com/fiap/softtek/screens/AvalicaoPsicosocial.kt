@@ -164,7 +164,8 @@ fun AvaliacaoPsicosocial(navController: NavController) {
         MenuHeader(
             pageTitle = "Avaliação Psicosocial",
             currentRoute = "avaliacaoPsicosocial",
-            navController = navController
+            navController = navController,
+            showBackButton = true
         ) {
             if (perguntaAtual == null) {
                 Column(
